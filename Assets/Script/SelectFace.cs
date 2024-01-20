@@ -16,7 +16,7 @@ public class SelectFace : MonoBehaviour
     void Update()
     {
         // 마우스 좌클릭이 되는 순간
-        if (Input.GetMouseButtonDown(0) && !CubeState.autoRotating)
+        if (Input.GetMouseButtonDown(0) && (Automate.moveList.Count <= 0))
         {
             readCube.ReadState();
             RaycastHit hit;

@@ -48,7 +48,7 @@ public class PivotRotation : MonoBehaviour
     {
         rotation = Vector3.zero;
         // Rotate()에서 찍힌 좌표를 시작으로 현재 좌표에 빼줌으로서 천천히 회전을 줌(sensitivity은 속도)
-        Vector3 mouseOffest = (Input.mousePosition - mouseRef);
+        Vector3 mouseOffest = Input.mousePosition - mouseRef;
 
         if (side == cubeState.up)
         {

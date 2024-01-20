@@ -66,7 +66,6 @@ public class RotateBigCube : MonoBehaviour
             currentSwipe = new Vector2(secondPressPos.x - firstPressPos.x, secondPressPos.y - firstPressPos.y);
             currentSwipe.Normalize();
 
-
             if (LeftSwipe(currentSwipe))
             {
                 target.transform.Rotate(0, 90, 0, Space.World);
