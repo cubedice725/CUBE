@@ -57,7 +57,6 @@ public class SelectFace : MonoBehaviour
             SpinSide(activeSide);
         }
         if (Input.GetMouseButtonUp(0)){
-            
         }
     }
     private void SpinSide(List<GameObject> side)
@@ -86,12 +85,12 @@ public class SelectFace : MonoBehaviour
         if (side == cubeState.front)
         {
             rotation.x = (mouseOffest.x + mouseOffest.y) * -1;
+            cubeMovement.TotalRotate(side, rotation.x);
+
         }
         if (side == cubeState.back)
         {
             rotation.x = (mouseOffest.x + mouseOffest.y) * 1;
         }
-        print(side[1]);
-        cubeMovement.TotalRotate(side, rotation);
     }
 }
