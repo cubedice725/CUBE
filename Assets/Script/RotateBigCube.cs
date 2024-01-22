@@ -17,10 +17,8 @@ public class RotateBigCube : MonoBehaviour
 
     void Update()
     {
-        if (Automate.moveList.Count <= 0){
-            Swipe();
-            Drag();
-        }
+        Swipe();
+        Drag();
     }
 
     // Swipe(); Drag();는 우클릭을 통해 작동하는 함수
