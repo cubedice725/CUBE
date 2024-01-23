@@ -9,9 +9,9 @@ public class CubeMovement : MonoBehaviour
     private CubeState cubeState;
     private ReadCube readCube;
     private float angle;
-    private float mamoryAngle;
-    bool 
+    private float mamoryAngle = 0;
     int testFloor;
+    bool auto;
     void Start()
     {
         cubeState = FindObjectOfType<CubeState>();
@@ -22,59 +22,67 @@ public class CubeMovement : MonoBehaviour
         // i += Time.deltaTime * 100;
         // TotalRotate(cubeState.front, new Vector3(-1, i, i));
         if (Input.GetMouseButtonUp(0)){
+            // auto = true;
             mamoryAngle += RotateToRightAngle(angle);
-            print(mamoryAngle);
             print(angle);
-            print(mamoryAngle - angle);
-            float testi = mamoryAngle;
+            // print("넣은값" + mamoryAngle);
+            // TotalRotate(nowCube, mamoryAngle);
+
+            // auto = false;
+            // float testi = mamoryAngle;
             
             // testM = (mamoryAngle - angle) * Time.deltaTime;
-            TotalRotate(nowCube, testi);
             // angle = 0;
         }
     }
-    public float RotateToRightAngle(float angle)
+    public float RotateToRightAngle(float inAngle)
     {
         
         // vec.y = Mathf.Round(angle.y / 90) * 90;
         // vec.z = Mathf.Round(angle.z / 90) * 90;
-        return Mathf.Round(angle/ 90) * 90;
+        return Mathf.Round(inAngle/ 90) * 90;
     }
+    // 마우스 좌클릭이 되는 순간과 현재 감지되고 있는 값을 뺀 값을 받는중
     public void TotalRotate(List<GameObject> cube, float inAngle){
+        float testmodule;
         testFloor=-1;
-        angle = inAngle;
         nowCube = cube;
-        float testmodule = - angle - mamoryAngle;
+        angle = inAngle;
+        if (auto){
+            testmodule = - inAngle;
+        }else{
+            testmodule = - inAngle - mamoryAngle;
+        }
         var parentSyncX = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z);
-        cube[3].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (angle + 0)), Mathf.Cos(Mathf.Deg2Rad * (angle + 0)));
+        cube[3].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (inAngle + 0)), Mathf.Cos(Mathf.Deg2Rad * (inAngle + 0)));
         cube[3].transform.parent.rotation = parentSyncX;
         cube[3].transform.parent.Rotate(new Vector3(testmodule, 0, 0));
 
-        cube[0].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (angle + 45)) * Mathf.Sqrt(2), Mathf.Cos(Mathf.Deg2Rad * (angle + 45)) * Mathf.Sqrt(2));
+        cube[0].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (inAngle + 45)) * Mathf.Sqrt(2), Mathf.Cos(Mathf.Deg2Rad * (inAngle + 45)) * Mathf.Sqrt(2));
         cube[0].transform.parent.rotation = parentSyncX;
         cube[0].transform.parent.Rotate(new Vector3(testmodule, 0, 0));
 
-        cube[1].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (angle + 90)), Mathf.Cos(Mathf.Deg2Rad * (angle + 90)));
+        cube[1].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (inAngle + 90)), Mathf.Cos(Mathf.Deg2Rad * (inAngle + 90)));
         cube[1].transform.parent.rotation = parentSyncX;
         cube[1].transform.parent.Rotate(new Vector3(testmodule, 0, 0));
 
-        cube[2].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (angle + 135)) * Mathf.Sqrt(2), Mathf.Cos(Mathf.Deg2Rad * (angle + 135)) * Mathf.Sqrt(2));
+        cube[2].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (inAngle + 135)) * Mathf.Sqrt(2), Mathf.Cos(Mathf.Deg2Rad * (inAngle + 135)) * Mathf.Sqrt(2));
         cube[2].transform.parent.rotation = parentSyncX;
         cube[2].transform.parent.Rotate(new Vector3(testmodule, 0, 0));
 
-        cube[5].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (angle + 180)), Mathf.Cos(Mathf.Deg2Rad * (angle + 180)));
+        cube[5].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (inAngle + 180)), Mathf.Cos(Mathf.Deg2Rad * (inAngle + 180)));
         cube[5].transform.parent.rotation = parentSyncX;
         cube[5].transform.parent.Rotate(new Vector3(testmodule, 0, 0));
 
-        cube[8].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (angle + 225)) * Mathf.Sqrt(2), Mathf.Cos(Mathf.Deg2Rad * (angle + 225)) * Mathf.Sqrt(2));
+        cube[8].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (inAngle + 225)) * Mathf.Sqrt(2), Mathf.Cos(Mathf.Deg2Rad * (inAngle + 225)) * Mathf.Sqrt(2));
         cube[8].transform.parent.rotation = parentSyncX;
         cube[8].transform.parent.Rotate(new Vector3(testmodule, 0, 0));
 
-        cube[7].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (angle + 270)), Mathf.Cos(Mathf.Deg2Rad * (angle + 270)));
+        cube[7].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (inAngle + 270)), Mathf.Cos(Mathf.Deg2Rad * (inAngle + 270)));
         cube[7].transform.parent.rotation = parentSyncX;
         cube[7].transform.parent.Rotate(new Vector3(testmodule, 0, 0));
 
-        cube[6].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (angle + 315)) * Mathf.Sqrt(2), Mathf.Cos(Mathf.Deg2Rad * (angle + 315)) * Mathf.Sqrt(2));
+        cube[6].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (inAngle + 315)) * Mathf.Sqrt(2), Mathf.Cos(Mathf.Deg2Rad * (inAngle + 315)) * Mathf.Sqrt(2));
         cube[6].transform.parent.rotation = parentSyncX;
         cube[6].transform.parent.Rotate(new Vector3(testmodule, 0, 0));
 

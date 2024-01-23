@@ -62,9 +62,8 @@ public class SelectFace : MonoBehaviour
     private void SpinSide(List<GameObject> side)
     {
         rotation = Vector3.zero;
-        // Rotate()에서 찍힌 좌표를 시작으로 현재 좌표에 빼줌으로서 천천히 회전을 줌(sensitivity은 속도)
+        // 마우스 좌클릭이 되는 순간과 현재 감지되고 있는 값을 뺀 값을 가져옴
         Vector3 mouseOffest = Input.mousePosition - mouseRef;
-        // print("클릭 되는 중" + mouseOffest);
 
         if (side == cubeState.up)
         {
