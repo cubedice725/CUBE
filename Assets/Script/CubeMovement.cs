@@ -6,53 +6,53 @@ using UnityEngine.TextCore.Text;
 public class CubeMovement : MonoBehaviour
 {
     private List<GameObject> nowCube;
-    private CubeState cubeState;
-    private ReadCube readCube;
-    private float angle;
+    private float firstAngle;
     private float mamoryAngle = 0;
     int testFloor;
-    bool auto;
+    bool auto = false;
     void Start()
     {
-        cubeState = FindObjectOfType<CubeState>();
     }
 
     void Update()
     {
-        // i += Time.deltaTime * 100;
-        // TotalRotate(cubeState.front, new Vector3(-1, i, i));
-        if (Input.GetMouseButtonUp(0)){
-            // auto = true;
-            mamoryAngle += RotateToRightAngle(angle);
-            print(angle);
-            // print("넣은값" + mamoryAngle);
-            // TotalRotate(nowCube, mamoryAngle);
-
-            // auto = false;
-            // float testi = mamoryAngle;
-            
-            // testM = (mamoryAngle - angle) * Time.deltaTime;
-            // angle = 0;
+        // 마우스 우측 클릭이 올라가면 자동으로 90도 각도로 맞춰 지도록 함
+        if (Input.GetMouseButtonUp(0))
+        {
+            auto = true;
+            mamoryAngle += RotateToRightAngle(firstAngle);
+            TotalRotate(nowCube, mamoryAngle);
+            auto = false;
         }
     }
+
+    // 90도 각도 맞춰주는 함수
     public float RotateToRightAngle(float inAngle)
     {
-        
+
         // vec.y = Mathf.Round(angle.y / 90) * 90;
         // vec.z = Mathf.Round(angle.z / 90) * 90;
-        return Mathf.Round(inAngle/ 90) * 90;
+        return Mathf.Round(inAngle / 90) * 90;
     }
+
     // 마우스 좌클릭이 되는 순간과 현재 감지되고 있는 값을 뺀 값을 받는중
-    public void TotalRotate(List<GameObject> cube, float inAngle){
+    public void TotalRotate(List<GameObject> cube, float inAngle)
+    {
         float testmodule;
-        testFloor=-1;
+        testFloor = -1;
         nowCube = cube;
-        angle = inAngle;
-        if (auto){
-            testmodule = - inAngle;
-        }else{
+
+        if (auto)
+        {
+            testmodule = -mamoryAngle;
+            inAngle = RotateToRightAngle(firstAngle);
+        }
+        else
+        {
+            firstAngle = inAngle;
             testmodule = - inAngle - mamoryAngle;
         }
+
         var parentSyncX = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z);
         cube[3].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (inAngle + 0)), Mathf.Cos(Mathf.Deg2Rad * (inAngle + 0)));
         cube[3].transform.parent.rotation = parentSyncX;
@@ -119,8 +119,8 @@ public class CubeMovement : MonoBehaviour
     // }
     // public void X_Rotate(int floor)
     // {
-        
-        
+
+
     // }
     // public void Z_Rotate(int floor, float angle)
     // {
@@ -129,7 +129,7 @@ public class CubeMovement : MonoBehaviour
     //     // [1,3] [1,2] [1,1] | [1,4] [1,8] [1,0] | [1,5] [1,6] [1,7]
     //     // [0,3] [0,2] [0,1] | [0,4] [0,8] [0,0] | [0,5] [0,6] [0,7]
     //     angle += Time.deltaTime * 100;
-      
+
     //     var parentSyncZ = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
     //     Cube[5].transform.localPosition = new Vector3(Mathf.Cos(Mathf.Deg2Rad * (angle + 0)), Mathf.Sin(Mathf.Deg2Rad * (angle + 0)), floor - 1);
     //     Cube[5].transform.rotation = parentSyncZ;

@@ -9,6 +9,7 @@ public class SelectFace : MonoBehaviour
     CubeMovement cubeMovement;
     CubeState cubeState;
     ReadCube readCube;
+    CubeMap cubeMap;
     Vector3 rotation;
 
     int layerMask = 1 << 8;
@@ -18,17 +19,20 @@ public class SelectFace : MonoBehaviour
         readCube = FindObjectOfType<ReadCube>();
         cubeState = FindObjectOfType<CubeState>();
         cubeMovement = FindObjectOfType<CubeMovement>();
+        cubeMap = FindObjectOfType<CubeMap>();
+        readCube.ReadState();
     }
     void Update()
     {
         // 마우스 좌클릭이 되는 순간
         if (Input.GetMouseButtonDown(0))
         {
+            // SpinSide함수에 사용될 처음 들어온 마우스 값
             mouseRef = Input.mousePosition;
-            // print("클릭 순간" + mouseRef);
             readCube.ReadState();
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
             // 클릭한 분에 Ray가 작동하여 충돌된 오브젝트를 확인
             if (Physics.Raycast(ray, out hit, 100.0f, layerMask))
             {
@@ -56,9 +60,9 @@ public class SelectFace : MonoBehaviour
         if (Input.GetMouseButton(0)){
             SpinSide(activeSide);
         }
-        if (Input.GetMouseButtonUp(0)){
-        }
     }
+
+    // 마우스 위지를 감지하고 회전을 주는 함수
     private void SpinSide(List<GameObject> side)
     {
         rotation = Vector3.zero;
@@ -85,7 +89,6 @@ public class SelectFace : MonoBehaviour
         {
             rotation.x = (mouseOffest.x + mouseOffest.y) * -1;
             cubeMovement.TotalRotate(side, rotation.x);
-
         }
         if (side == cubeState.back)
         {
