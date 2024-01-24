@@ -12,30 +12,4 @@ public class CubeState : MonoBehaviour
     public List<GameObject> left = new List<GameObject>();
     public List<GameObject> right = new List<GameObject>();
 
-    public static bool autoRotating = false;
-    public static bool started = false;
-
-    // 중심 주위에 있는 큐브의 부모를 중심 큐브에 할당
-    public void PickUp(List<GameObject> cubeSide)
-    {
-        foreach (GameObject face in cubeSide)
-        {
-            if (face != cubeSide[4])
-            {
-                face.transform.parent.transform.parent = cubeSide[4].transform.parent;
-            }
-        }
-    }
-
-    // 루빅스 큐브로 부모를 돌리는 함수
-    public void PutDown(List<GameObject> littleCubes, Transform pivot)
-    {
-        foreach (GameObject littleCube in littleCubes)
-        {
-            if (littleCube != littleCubes[4])
-            {
-                littleCube.transform.parent.transform.parent = pivot;
-            }
-        }
-    }
 }

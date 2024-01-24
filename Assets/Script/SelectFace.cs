@@ -66,42 +66,45 @@ public class SelectFace : MonoBehaviour
     // 마우스 위지를 감지하고 회전을 주는 함수
     private void SpinSide(List<GameObject> side)
     {
-        print(side == cubeState.front);
+        
         rotation = Vector3.zero;
         // 마우스 좌클릭이 되는 순간과 현재 감지되고 있는 값을 뺀 값을 가져옴
         Vector3 mouseOffest = Input.mousePosition - mouseRef;
         if (side == cubeState.up)
         {
-            rotation.y = (mouseOffest.x + mouseOffest.y) * 1;
-            cubeMovement.TotalRotate(side, rotation.y);
+            rotation.y = (mouseOffest.x + mouseOffest.y) * -1;
+            cubeMovement.StartRotate(side, rotation.y);
         }
         if (side == cubeState.down)
         {
             rotation.y = (mouseOffest.x + mouseOffest.y) * -1;
-            cubeMovement.TotalRotate(side, rotation.y);
+            cubeMovement.StartRotate(side, rotation.y);
         }
         if (side == cubeState.left)
         {
-            rotation.z = (mouseOffest.x + mouseOffest.y) * 1;
-            cubeMovement.TotalRotate(side, rotation.z);
+            cubeMovement.floor = 1;
+            rotation.z = (mouseOffest.x + mouseOffest.y) * -1;
+            cubeMovement.StartRotate(side, rotation.z);
 
         }
         if (side == cubeState.right)
         {
+            cubeMovement.floor = -1;
             rotation.z = (mouseOffest.x + mouseOffest.y) * -1;
-            cubeMovement.TotalRotate(side, rotation.z);
+            cubeMovement.StartRotate(side, rotation.z);
 
         }
         if (side == cubeState.front)
         {
+            cubeMovement.floor = -1;
             rotation.x = (mouseOffest.x + mouseOffest.y) * -1;
-            print("안"+rotation.x);
-            cubeMovement.TotalRotate(side, rotation.x);
+            cubeMovement.StartRotate(side, rotation.x);
         }
         if (side == cubeState.back)
         {
+            cubeMovement.floor = 1;
             rotation.x = (mouseOffest.x + mouseOffest.y) * -1;
-            cubeMovement.TotalRotate(side, rotation.x);
+            cubeMovement.StartRotate(side, rotation.x);
 
         }
     }

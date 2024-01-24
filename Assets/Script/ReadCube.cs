@@ -28,19 +28,18 @@ public class ReadCube : MonoBehaviour
     CubeMap cubeMap;
     public GameObject emptyGo;
     int[,] XY = { { -1, 0 }, { -1, 1 }, { 0, 1 }, { 1, 1 }, { 1, 0 }, { 1, -1 }, { 0, -1 }, { -1, -1 }, { 0, 0 } };
+    int[,] mirrorXY = { { 1, 0 }, { 1, 1 }, { 0, 1 }, { -1, 1 }, { -1, 0 }, { -1, -1 }, { 0, -1 }, { 1, -1 }, { 0, 0 } };
+
     void Start()
     {
         SetRayTransforms();
         cubeState = FindObjectOfType<CubeState>();
         cubeMap = FindObjectOfType<CubeMap>();
         ReadState();
-        CubeState.started = true;
-
     }
     void Update()
     {
-        ReadState();
-
+        cubeState.right = ReadFace(rightRays, tRight);
     }
 
     // 업데이트 된 위치에서 인식하여 색상을 읽어오는 함수
@@ -65,13 +64,13 @@ public class ReadCube : MonoBehaviour
         upRays = BuildRays(tUp, new Vector3(90, 90, 0));
         downRays = BuildRays(tDown, new Vector3(270, 90, 0));
         leftRays = BuildRays(tLeft, new Vector3(0, 180, 0));
-        rightRays = BuildRays(tRight, new Vector3(0, 0, 0));
+        rightRays = BuildRays(tRight, new Vector3(0, 0, 0), true);
         frontRays = BuildRays(tFront, new Vector3(0, 90, 0));
-        backRays = BuildRays(tBack, new Vector3(0, 270, 0));
+        backRays = BuildRays(tBack, new Vector3(0, 270, 0), true);
     }
 
     //Ray를 복제하는 함수
-    List<GameObject> BuildRays(Transform rayTransform, Vector3 direction)
+    List<GameObject> BuildRays(Transform rayTransform, Vector3 direction, bool mirror = false)
     {
         int rayCount = 0;
         List<GameObject> rays = new List<GameObject>();
@@ -79,15 +78,30 @@ public class ReadCube : MonoBehaviour
         // -1, 0 | 0, 0 | 1, 0
         // -1,-1 | 0,-1 | 1,-1
         // 위의 방식으로 큐브를 생성한 후
-        for (int i = 0; i < 9; i++)
+        if (mirror)
         {
-            Vector3 startPos = new Vector3(rayTransform.localPosition.x + XY[i,0], rayTransform.localPosition.y + XY[i,1], rayTransform.localPosition.z);
-            GameObject rayStart = Instantiate(emptyGo, startPos, Quaternion.identity, rayTransform);
-            rayStart.name = rayCount.ToString();
-            rays.Add(rayStart);
-            rayCount++;
+            for (int i = 0; i < 9; i++)
+            {
+                Vector3 startPos = new Vector3(rayTransform.localPosition.x + mirrorXY[i, 0], rayTransform.localPosition.y + mirrorXY[i, 1], rayTransform.localPosition.z);
+                GameObject rayStart = Instantiate(emptyGo, startPos, Quaternion.identity, rayTransform);
+                rayStart.name = rayCount.ToString();
+                rays.Add(rayStart);
+                rayCount++;
+            }
         }
-        // 수직으로 생성된 Ray을 돌림
+        else
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                Vector3 startPos = new Vector3(rayTransform.localPosition.x + XY[i, 0], rayTransform.localPosition.y + XY[i, 1], rayTransform.localPosition.z);
+                GameObject rayStart = Instantiate(emptyGo, startPos, Quaternion.identity, rayTransform);
+                rayStart.name = rayCount.ToString();
+                rays.Add(rayStart);
+                rayCount++;
+            }
+        }
+
+        // 방향에 맞게 Ray을 돌림
         rayTransform.localRotation = Quaternion.Euler(direction);
         return rays;
     }
