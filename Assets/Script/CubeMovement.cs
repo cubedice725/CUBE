@@ -6,12 +6,14 @@ using UnityEngine.TextCore.Text;
 public class CubeMovement : MonoBehaviour
 {
     private List<GameObject> nowCube;
+    private CubeState cubeState;
     private float firstAngle;
     private float mamoryAngle = 0;
-    int testFloor;
     bool auto = false;
+
     void Start()
     {
+        cubeState = FindObjectOfType<CubeState>();
     }
 
     void Update()
@@ -26,68 +28,181 @@ public class CubeMovement : MonoBehaviour
         }
     }
 
-    // 90도 각도 맞춰주는 함수
-    public float RotateToRightAngle(float inAngle)
-    {
-
-        // vec.y = Mathf.Round(angle.y / 90) * 90;
-        // vec.z = Mathf.Round(angle.z / 90) * 90;
-        return Mathf.Round(inAngle / 90) * 90;
-    }
 
     // 마우스 좌클릭이 되는 순간과 현재 감지되고 있는 값을 뺀 값을 받는중
-    public void TotalRotate(List<GameObject> cube, float inAngle)
+    public void TotalRotate(List<GameObject> side, float inAngle)
     {
-        float testmodule;
-        testFloor = -1;
-        nowCube = cube;
+        float rotationAngle;
+        nowCube = side;
 
         if (auto)
         {
-            testmodule = -mamoryAngle;
+            rotationAngle = -mamoryAngle;
             inAngle = RotateToRightAngle(firstAngle);
         }
         else
         {
             firstAngle = inAngle;
-            testmodule = - inAngle - mamoryAngle;
+            rotationAngle = -inAngle - mamoryAngle;
         }
+        CubeRotation(side, inAngle, rotationAngle);
+        
+    }
 
-        var parentSyncX = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z);
-        cube[3].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (inAngle + 0)), Mathf.Cos(Mathf.Deg2Rad * (inAngle + 0)));
-        cube[3].transform.parent.rotation = parentSyncX;
-        cube[3].transform.parent.Rotate(new Vector3(testmodule, 0, 0));
+    public void CubeRotation(List<GameObject> side, float inPAngle, float inRAngle)
+    {
+        var parentSync = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z);
+        int i;
+        int floor;
+        if (side == cubeState.front)
+        {
+            floor = -1;
+            side[0].transform.parent.localPosition = new Vector3(floor, Sin(inPAngle, 0), Cos(inPAngle, 0)); //0도
+            side[1].transform.parent.localPosition = new Vector3(floor, SinSqrt(inPAngle, 1), CosSqrt(inPAngle, 1)); //45도
+            side[2].transform.parent.localPosition = new Vector3(floor, Sin(inPAngle, 2), Cos(inPAngle, 2)); //90도
+            side[3].transform.parent.localPosition = new Vector3(floor, SinSqrt(inPAngle, 3), CosSqrt(inPAngle, 3)); //135도
+            side[4].transform.parent.localPosition = new Vector3(floor, Sin(inPAngle, 4), Cos(inPAngle, 4)); //180도
+            side[5].transform.parent.localPosition = new Vector3(floor, SinSqrt(inPAngle, 5), CosSqrt(inPAngle, 5)); //255도
+            side[6].transform.parent.localPosition = new Vector3(floor, Sin(inPAngle, 6), Cos(inPAngle, 6)); //270도
+            side[7].transform.parent.localPosition = new Vector3(floor, SinSqrt(inPAngle, 7), CosSqrt(inPAngle, 7)); //315도
+            for (i = 0; i < 9; i++)
+            {
+                side[i].transform.parent.rotation = parentSync;
+                side[i].transform.parent.Rotate(new Vector3(inRAngle, 0, 0));
+            }
+        }
+        if (side == cubeState.back)
+        {
+            floor = 1;
+            side[0].transform.parent.localPosition = new Vector3(floor, SinSqrt(inPAngle, 1), CosSqrt(inPAngle, 1)); //45도
+            side[1].transform.parent.localPosition = new Vector3(floor, Sin(inPAngle, 2), Cos(inPAngle, 2)); //90도
+            side[2].transform.parent.localPosition = new Vector3(floor, SinSqrt(inPAngle, 3), CosSqrt(inPAngle, 3)); // 135도
+            side[3].transform.parent.localPosition = new Vector3(floor, Sin(inPAngle, 0), Cos(inPAngle, 0)); //0도
 
-        cube[0].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (inAngle + 45)) * Mathf.Sqrt(2), Mathf.Cos(Mathf.Deg2Rad * (inAngle + 45)) * Mathf.Sqrt(2));
-        cube[0].transform.parent.rotation = parentSyncX;
-        cube[0].transform.parent.Rotate(new Vector3(testmodule, 0, 0));
+            side[5].transform.parent.localPosition = new Vector3(floor, Sin(inPAngle, 4), Cos(inPAngle, 4)); //180도
+            side[6].transform.parent.localPosition = new Vector3(floor, SinSqrt(inPAngle, 7), CosSqrt(inPAngle, 7)); //315도
+            side[7].transform.parent.localPosition = new Vector3(floor, Sin(inPAngle, 6), Cos(inPAngle, 6)); //270
+            side[8].transform.parent.localPosition = new Vector3(floor, SinSqrt(inPAngle, 5), CosSqrt(inPAngle, 5)); //255도
+            for (i = 0; i < 9; i++)
+            {
+                side[i].transform.parent.rotation = parentSync;
+                side[i].transform.parent.Rotate(new Vector3(inRAngle, 0, 0));
+            }
 
-        cube[1].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (inAngle + 90)), Mathf.Cos(Mathf.Deg2Rad * (inAngle + 90)));
-        cube[1].transform.parent.rotation = parentSyncX;
-        cube[1].transform.parent.Rotate(new Vector3(testmodule, 0, 0));
+        }
+        if (side == cubeState.up)
+        {
+            floor = 1;
+            side[0].transform.parent.localPosition = new Vector3(floor, SinSqrt(inPAngle, 3), CosSqrt(inPAngle, 3)); // 135도
+            side[1].transform.parent.localPosition = new Vector3(floor, Sin(inPAngle, 2), Cos(inPAngle, 2)); //90도
+            side[2].transform.parent.localPosition = new Vector3(floor, SinSqrt(inPAngle, 1), CosSqrt(inPAngle, 1)); //45도
+            side[3].transform.parent.localPosition = new Vector3(floor, Sin(inPAngle, 4), Cos(inPAngle, 4)); //180도
 
-        cube[2].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (inAngle + 135)) * Mathf.Sqrt(2), Mathf.Cos(Mathf.Deg2Rad * (inAngle + 135)) * Mathf.Sqrt(2));
-        cube[2].transform.parent.rotation = parentSyncX;
-        cube[2].transform.parent.Rotate(new Vector3(testmodule, 0, 0));
+            side[5].transform.parent.localPosition = new Vector3(floor, Sin(inPAngle, 0), Cos(inPAngle, 0)); //0도
+            side[6].transform.parent.localPosition = new Vector3(floor, SinSqrt(inPAngle, 5), CosSqrt(inPAngle, 5)); //255도
+            side[7].transform.parent.localPosition = new Vector3(floor, Sin(inPAngle, 6), Cos(inPAngle, 6)); //270도
+            side[8].transform.parent.localPosition = new Vector3(floor, SinSqrt(inPAngle, 7), CosSqrt(inPAngle, 7)); //315도
+            for (i = 0; i < 9; i++)
+            {
+                side[i].transform.parent.rotation = parentSync;
+                side[i].transform.parent.Rotate(new Vector3(inRAngle, 0, 0));
+            }
+            // floor = 1;
+            // side[0].transform.parent.localPosition = new Vector3(SinSqrt(inPAngle, 1), floor, CosSqrt(inPAngle, 1)); //45도
+            // side[1].transform.parent.localPosition = new Vector3(Sin(inPAngle, 2), floor, Cos(inPAngle, 2)); //90도
+            // side[2].transform.parent.localPosition = new Vector3(SinSqrt(inPAngle, 3), floor, CosSqrt(inPAngle, 3)); // 135도
+            // side[3].transform.parent.localPosition = new Vector3(Sin(inPAngle, 0), floor, Cos(inPAngle, 0)); //0도
 
-        cube[5].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (inAngle + 180)), Mathf.Cos(Mathf.Deg2Rad * (inAngle + 180)));
-        cube[5].transform.parent.rotation = parentSyncX;
-        cube[5].transform.parent.Rotate(new Vector3(testmodule, 0, 0));
+            // side[5].transform.parent.localPosition = new Vector3(Sin(inPAngle, 4), floor, Cos(inPAngle, 4)); //180도
+            // side[6].transform.parent.localPosition = new Vector3(SinSqrt(inPAngle, 7), floor, CosSqrt(inPAngle, 7)); //315도
+            // side[7].transform.parent.localPosition = new Vector3(Sin(inPAngle, 6), floor, Cos(inPAngle, 6)); //270도
+            // side[8].transform.parent.localPosition = new Vector3(SinSqrt(inPAngle, 5), floor, CosSqrt(inPAngle, 5)); //255도
+            // for (i = 0; i < 9; i++)
+            // {
+            //     side[i].transform.parent.rotation = parentSync;
+            //     side[i].transform.parent.Rotate(new Vector3(0, -inRAngle, 0));
+            // }
+        }
+        if (side == cubeState.down)
+        {
+            floor = -1;
+            side[0].transform.parent.localPosition = new Vector3(SinSqrt(inPAngle, 1), floor, CosSqrt(inPAngle, 1)); //45도
+            side[1].transform.parent.localPosition = new Vector3(Sin(inPAngle, 2), floor, Cos(inPAngle, 2)); //90도
+            side[2].transform.parent.localPosition = new Vector3(SinSqrt(inPAngle, 3), floor, CosSqrt(inPAngle, 3)); // 135도
+            side[3].transform.parent.localPosition = new Vector3(Sin(inPAngle, 0), floor, Cos(inPAngle, 0)); //0도
 
-        cube[8].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (inAngle + 225)) * Mathf.Sqrt(2), Mathf.Cos(Mathf.Deg2Rad * (inAngle + 225)) * Mathf.Sqrt(2));
-        cube[8].transform.parent.rotation = parentSyncX;
-        cube[8].transform.parent.Rotate(new Vector3(testmodule, 0, 0));
+            side[5].transform.parent.localPosition = new Vector3(Sin(inPAngle, 4), floor, Cos(inPAngle, 4)); //180도
+            side[6].transform.parent.localPosition = new Vector3(SinSqrt(inPAngle, 7), floor, CosSqrt(inPAngle, 7)); //315도
+            side[7].transform.parent.localPosition = new Vector3(Sin(inPAngle, 6), floor, Cos(inPAngle, 6)); //270도
+            side[8].transform.parent.localPosition = new Vector3(SinSqrt(inPAngle, 5), floor, CosSqrt(inPAngle, 5)); //255도
+            for (i = 0; i < 9; i++)
+            {
+                side[i].transform.parent.rotation = parentSync;
+                side[i].transform.parent.Rotate(new Vector3(0, -inRAngle, 0));
 
-        cube[7].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (inAngle + 270)), Mathf.Cos(Mathf.Deg2Rad * (inAngle + 270)));
-        cube[7].transform.parent.rotation = parentSyncX;
-        cube[7].transform.parent.Rotate(new Vector3(testmodule, 0, 0));
+            }
+        }
+        if (side == cubeState.left)
+        {
+            floor = -1;
+            side[0].transform.parent.localPosition = new Vector3(floor, SinSqrt(inPAngle, 1), CosSqrt(inPAngle, 1)); //45도
+            side[1].transform.parent.localPosition = new Vector3(floor, Sin(inPAngle, 2), Cos(inPAngle, 2)); //90도
+            side[2].transform.parent.localPosition = new Vector3(floor, SinSqrt(inPAngle, 3), CosSqrt(inPAngle, 3)); // 135도
+            side[3].transform.parent.localPosition = new Vector3(floor, Sin(inPAngle, 0), Cos(inPAngle, 0)); //0도
 
-        cube[6].transform.parent.localPosition = new Vector3(testFloor, Mathf.Sin(Mathf.Deg2Rad * (inAngle + 315)) * Mathf.Sqrt(2), Mathf.Cos(Mathf.Deg2Rad * (inAngle + 315)) * Mathf.Sqrt(2));
-        cube[6].transform.parent.rotation = parentSyncX;
-        cube[6].transform.parent.Rotate(new Vector3(testmodule, 0, 0));
+            side[5].transform.parent.localPosition = new Vector3(floor, Sin(inPAngle, 4), Cos(inPAngle, 4)); //180도
+            side[6].transform.parent.localPosition = new Vector3(floor, SinSqrt(inPAngle, 7), CosSqrt(inPAngle, 7)); //315도
+            side[7].transform.parent.localPosition = new Vector3(floor, Sin(inPAngle, 6), Cos(inPAngle, 6)); //270
+            side[8].transform.parent.localPosition = new Vector3(floor, SinSqrt(inPAngle, 5), CosSqrt(inPAngle, 5)); //255도
+            for (i = 0; i < 9; i++)
+            {
+                side[i].transform.parent.rotation = parentSync;
+                side[i].transform.parent.Rotate(new Vector3(inRAngle, 0, 0));
+            }
+        }
+        if (side == cubeState.right)
+        {
+            floor = -1;
+            side[0].transform.parent.localPosition = new Vector3(floor, SinSqrt(inPAngle, 3), CosSqrt(inPAngle, 3)); // 135도
+            side[1].transform.parent.localPosition = new Vector3(floor, Sin(inPAngle, 2), Cos(inPAngle, 2)); //90도
+            side[2].transform.parent.localPosition = new Vector3(floor, SinSqrt(inPAngle, 1), CosSqrt(inPAngle, 1)); //45도
+            side[3].transform.parent.localPosition = new Vector3(floor, Sin(inPAngle, 4), Cos(inPAngle, 4)); //180도
 
-        cube[4].transform.parent.rotation = parentSyncX;
-        cube[4].transform.parent.Rotate(new Vector3(testmodule, 0, 0));
+            side[5].transform.parent.localPosition = new Vector3(floor, Sin(inPAngle, 0), Cos(inPAngle, 0)); //0도
+            side[6].transform.parent.localPosition = new Vector3(floor, SinSqrt(inPAngle, 5), CosSqrt(inPAngle, 5)); //255도
+            side[7].transform.parent.localPosition = new Vector3(floor, Sin(inPAngle, 6), Cos(inPAngle, 6)); //270
+            side[8].transform.parent.localPosition = new Vector3(floor, SinSqrt(inPAngle, 7), CosSqrt(inPAngle, 7)); //315도
+            for (i = 0; i < 9; i++)
+            {
+                side[i].transform.parent.rotation = parentSync;
+                side[i].transform.parent.Rotate(new Vector3(inRAngle, 0, 0));
+            }
+        }
+        else
+        {
+        }
+    }
+    public float SinSqrt(float inAngle, int count)
+    {
+        return Mathf.Sin(Mathf.Deg2Rad * (inAngle + 45 * count)) * Mathf.Sqrt(2);
+
+    }
+    public float CosSqrt(float inAngle, int count)
+    {
+        return Mathf.Cos(Mathf.Deg2Rad * (inAngle + 45 * count)) * Mathf.Sqrt(2);
+    }
+    public float Sin(float inAngle, int count)
+    {
+        return Mathf.Sin(Mathf.Deg2Rad * (inAngle + 45 * count));
+
+    }
+    public float Cos(float inAngle, int count)
+    {
+        return Mathf.Cos(Mathf.Deg2Rad * (inAngle + 45 * count));
+    }
+    public float RotateToRightAngle(float inAngle)
+    {
+        return Mathf.Round(inAngle / 90) * 90;
     }
     // public void Y_Rotate(int floor, float angle)
     // {

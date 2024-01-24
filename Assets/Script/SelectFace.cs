@@ -45,7 +45,7 @@ public class SelectFace : MonoBehaviour
                     cubeState.front,
                     cubeState.back
                 };
-                
+
                 // cubeState에 있는 리스트들을 확인하여 충돌된 오브젝트가 어느 방향에 있는지 확인
                 // (Contains는 요소를 파악하는데 게임 오브젝트는 같은 이름이여도 다른 오브젝트이면 다른것으로 인식함)
                 foreach (List<GameObject> cubeSide in cubeSides)
@@ -57,7 +57,8 @@ public class SelectFace : MonoBehaviour
                 }
             }
         }
-        if (Input.GetMouseButton(0)){
+        if (Input.GetMouseButton(0))
+        {
             SpinSide(activeSide);
         }
     }
@@ -65,34 +66,43 @@ public class SelectFace : MonoBehaviour
     // 마우스 위지를 감지하고 회전을 주는 함수
     private void SpinSide(List<GameObject> side)
     {
+        print(side == cubeState.front);
         rotation = Vector3.zero;
         // 마우스 좌클릭이 되는 순간과 현재 감지되고 있는 값을 뺀 값을 가져옴
         Vector3 mouseOffest = Input.mousePosition - mouseRef;
-
         if (side == cubeState.up)
         {
             rotation.y = (mouseOffest.x + mouseOffest.y) * 1;
+            cubeMovement.TotalRotate(side, rotation.y);
         }
         if (side == cubeState.down)
         {
             rotation.y = (mouseOffest.x + mouseOffest.y) * -1;
+            cubeMovement.TotalRotate(side, rotation.y);
         }
         if (side == cubeState.left)
         {
             rotation.z = (mouseOffest.x + mouseOffest.y) * 1;
+            cubeMovement.TotalRotate(side, rotation.z);
+
         }
         if (side == cubeState.right)
         {
             rotation.z = (mouseOffest.x + mouseOffest.y) * -1;
+            cubeMovement.TotalRotate(side, rotation.z);
+
         }
         if (side == cubeState.front)
         {
             rotation.x = (mouseOffest.x + mouseOffest.y) * -1;
+            print("안"+rotation.x);
             cubeMovement.TotalRotate(side, rotation.x);
         }
         if (side == cubeState.back)
         {
-            rotation.x = (mouseOffest.x + mouseOffest.y) * 1;
+            rotation.x = (mouseOffest.x + mouseOffest.y) * -1;
+            cubeMovement.TotalRotate(side, rotation.x);
+
         }
     }
 }

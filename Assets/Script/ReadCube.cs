@@ -27,6 +27,7 @@ public class ReadCube : MonoBehaviour
     CubeState cubeState;
     CubeMap cubeMap;
     public GameObject emptyGo;
+    int[,] XY = { { -1, 0 }, { -1, 1 }, { 0, 1 }, { 1, 1 }, { 1, 0 }, { 1, -1 }, { 0, -1 }, { -1, -1 }, { 0, 0 } };
     void Start()
     {
         SetRayTransforms();
@@ -34,7 +35,12 @@ public class ReadCube : MonoBehaviour
         cubeMap = FindObjectOfType<CubeMap>();
         ReadState();
         CubeState.started = true;
-        
+
+    }
+    void Update()
+    {
+        ReadState();
+
     }
 
     // 업데이트 된 위치에서 인식하여 색상을 읽어오는 함수
@@ -73,16 +79,13 @@ public class ReadCube : MonoBehaviour
         // -1, 0 | 0, 0 | 1, 0
         // -1,-1 | 0,-1 | 1,-1
         // 위의 방식으로 큐브를 생성한 후
-        for (int y = 1; y > -2; y--)
+        for (int i = 0; i < 9; i++)
         {
-            for (int x = -1; x < 2; x++)
-            {
-                Vector3 startPos = new Vector3(rayTransform.localPosition.x + x, rayTransform.localPosition.y + y, rayTransform.localPosition.z);
-                GameObject rayStart = Instantiate(emptyGo, startPos, Quaternion.identity, rayTransform);
-                rayStart.name = rayCount.ToString();
-                rays.Add(rayStart);
-                rayCount++;
-            }
+            Vector3 startPos = new Vector3(rayTransform.localPosition.x + XY[i,0], rayTransform.localPosition.y + XY[i,1], rayTransform.localPosition.z);
+            GameObject rayStart = Instantiate(emptyGo, startPos, Quaternion.identity, rayTransform);
+            rayStart.name = rayCount.ToString();
+            rays.Add(rayStart);
+            rayCount++;
         }
         // 수직으로 생성된 Ray을 돌림
         rayTransform.localRotation = Quaternion.Euler(direction);
