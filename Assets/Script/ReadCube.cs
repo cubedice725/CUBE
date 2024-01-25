@@ -39,7 +39,7 @@ public class ReadCube : MonoBehaviour
     }
     void Update()
     {
-        cubeState.right = ReadFace(rightRays, tRight);
+
     }
 
     // 업데이트 된 위치에서 인식하여 색상을 읽어오는 함수
@@ -61,10 +61,10 @@ public class ReadCube : MonoBehaviour
     // Ray의 방향과 위치를 확인하여 BuildRays통해 복제하는 함수
     void SetRayTransforms()
     {
-        upRays = BuildRays(tUp, new Vector3(90, 90, 0));
-        downRays = BuildRays(tDown, new Vector3(270, 90, 0));
-        leftRays = BuildRays(tLeft, new Vector3(0, 180, 0));
-        rightRays = BuildRays(tRight, new Vector3(0, 0, 0), true);
+        upRays = BuildRays(tUp, new Vector3(90, 90, 90), true);
+        downRays = BuildRays(tDown, new Vector3(270, 90, 90));
+        leftRays = BuildRays(tLeft, new Vector3(0, 180, 90), true);
+        rightRays = BuildRays(tRight, new Vector3(0, 0, 270));
         frontRays = BuildRays(tFront, new Vector3(0, 90, 0));
         backRays = BuildRays(tBack, new Vector3(0, 270, 0), true);
     }
@@ -77,7 +77,10 @@ public class ReadCube : MonoBehaviour
         // -1, 1 | 0, 1 | 1, 1
         // -1, 0 | 0, 0 | 1, 0
         // -1,-1 | 0,-1 | 1,-1
-        // 위의 방식으로 큐브를 생성한 후
+        // 위의 방식으로 큐브를 생성
+        // 순서는 XY배열로 생성됨
+
+        // 거울처럼 반대로 되게 하기 위해여 mirror배열순서로 생성함
         if (mirror)
         {
             for (int i = 0; i < 9; i++)

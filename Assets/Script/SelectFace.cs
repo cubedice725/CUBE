@@ -32,7 +32,6 @@ public class SelectFace : MonoBehaviour
             readCube.ReadState();
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
             // 클릭한 분에 Ray가 작동하여 충돌된 오브젝트를 확인
             if (Physics.Raycast(ray, out hit, 100.0f, layerMask))
             {
@@ -70,13 +69,16 @@ public class SelectFace : MonoBehaviour
         rotation = Vector3.zero;
         // 마우스 좌클릭이 되는 순간과 현재 감지되고 있는 값을 뺀 값을 가져옴
         Vector3 mouseOffest = Input.mousePosition - mouseRef;
+
         if (side == cubeState.up)
         {
+            cubeMovement.floor = 1;
             rotation.y = (mouseOffest.x + mouseOffest.y) * -1;
             cubeMovement.StartRotate(side, rotation.y);
         }
         if (side == cubeState.down)
         {
+            cubeMovement.floor = -1;
             rotation.y = (mouseOffest.x + mouseOffest.y) * -1;
             cubeMovement.StartRotate(side, rotation.y);
         }
@@ -85,14 +87,11 @@ public class SelectFace : MonoBehaviour
             cubeMovement.floor = 1;
             rotation.z = (mouseOffest.x + mouseOffest.y) * -1;
             cubeMovement.StartRotate(side, rotation.z);
-
         }
-        if (side == cubeState.right)
-        {
+        if (side == cubeState.right){
             cubeMovement.floor = -1;
             rotation.z = (mouseOffest.x + mouseOffest.y) * -1;
             cubeMovement.StartRotate(side, rotation.z);
-
         }
         if (side == cubeState.front)
         {
@@ -105,7 +104,6 @@ public class SelectFace : MonoBehaviour
             cubeMovement.floor = 1;
             rotation.x = (mouseOffest.x + mouseOffest.y) * -1;
             cubeMovement.StartRotate(side, rotation.x);
-
         }
     }
 }
