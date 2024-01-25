@@ -28,7 +28,6 @@ public class SelectFace : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             // SpinSide함수에 사용될 처음 들어온 마우스 값
-            mouseRef = Input.mousePosition;
             readCube.ReadState();
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -73,37 +72,38 @@ public class SelectFace : MonoBehaviour
         if (side == cubeState.up)
         {
             cubeMovement.floor = 1;
-            rotation.y = (mouseOffest.x + mouseOffest.y) * -1;
+            rotation.y = (mouseOffest.x + mouseOffest.y) * 0.4f * -1;
             cubeMovement.StartRotate(side, rotation.y);
         }
         if (side == cubeState.down)
         {
             cubeMovement.floor = -1;
-            rotation.y = (mouseOffest.x + mouseOffest.y) * -1;
+            rotation.y = (mouseOffest.x + mouseOffest.y) * 0.4f * -1;
             cubeMovement.StartRotate(side, rotation.y);
         }
         if (side == cubeState.left)
         {
             cubeMovement.floor = 1;
-            rotation.z = (mouseOffest.x + mouseOffest.y) * -1;
+            rotation.z = (mouseOffest.x + mouseOffest.y) * 0.4f * -1;
             cubeMovement.StartRotate(side, rotation.z);
         }
         if (side == cubeState.right){
             cubeMovement.floor = -1;
-            rotation.z = (mouseOffest.x + mouseOffest.y) * -1;
+            rotation.z = (mouseOffest.x + mouseOffest.y) * 0.4f * -1;
             cubeMovement.StartRotate(side, rotation.z);
         }
         if (side == cubeState.front)
         {
             cubeMovement.floor = -1;
-            rotation.x = (mouseOffest.x + mouseOffest.y) * -1;
+            rotation.x = (mouseOffest.x + mouseOffest.y) * 0.4f * -1;
             cubeMovement.StartRotate(side, rotation.x);
         }
         if (side == cubeState.back)
         {
             cubeMovement.floor = 1;
-            rotation.x = (mouseOffest.x + mouseOffest.y) * -1;
+            rotation.x = (mouseOffest.x + mouseOffest.y) * 0.4f * -1;
             cubeMovement.StartRotate(side, rotation.x);
         }
+        mouseRef = Input.mousePosition;
     }
 }

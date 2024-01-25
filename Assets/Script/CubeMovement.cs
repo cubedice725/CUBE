@@ -8,7 +8,14 @@ public class CubeMovement : MonoBehaviour
     private List<GameObject> nowCube;
     private CubeState cubeState;
     private float firstAngle;
-    private float mamoryAngle = 0;
+    private float mamoryAngle;
+    private float frontAngle;
+    private float backAngle;
+    private float upAngle;
+    private float downAngle;
+    private float rigntAngle;
+    private float leftAngle;
+    float angle = 0;
     public int floor;
     bool auto = false;
 
@@ -23,51 +30,55 @@ public class CubeMovement : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             auto = true;
-            mamoryAngle += RotateToRightAngle(firstAngle);
-            StartRotate(nowCube, mamoryAngle);
+            angle = RotateToRightAngle(angle);
+            StartRotate(nowCube, angle);
+            angle = 0;
             auto = false;
+
         }
     }
 
     // 마우스 좌클릭이 되는 순간과 현재 감지되고 있는 값을 뺀 값을 받는중
     public void StartRotate(List<GameObject> side, float inAngle)
     {
-        float rotationAngle;
         nowCube = side;
-
-        if (auto)
-        {
-            rotationAngle = -mamoryAngle;
-            inAngle = RotateToRightAngle(firstAngle);
-        }
-        else
-        {
-            firstAngle = inAngle;
-            rotationAngle = -inAngle - mamoryAngle;
-        }
-        CubeRotation(side, inAngle, rotationAngle);
+        CubeRotation(side, inAngle);
     }
 
-    public void CubeRotation(List<GameObject> side, float inAngle, float rotationAngle)
+    public void CubeRotation(List<GameObject> side, float inAngle)
     {
+        print(inAngle);
+        if(!auto){
+            if( angle >= 360){
+                angle += inAngle;
+            }
+        }
         var parentSync = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z);
+        print(angle);
         if (side == cubeState.front || side == cubeState.back)
         {
             for (int i = 0; i < 8; i++)
             {
                 if (i % 2 == 0)
                 {
-                    side[i].transform.parent.localPosition = new Vector3(floor, Sin(inAngle, i), Cos(inAngle, i));
+                    side[i].transform.parent.localPosition = new Vector3(floor, Sin(angle, i), Cos(angle, i));
                 }
                 else
                 {
-                    side[i].transform.parent.localPosition = new Vector3(floor, SinSqrt(inAngle, i), CosSqrt(inAngle, i));
+                    side[i].transform.parent.localPosition = new Vector3(floor, SinSqrt(angle, i), CosSqrt(angle, i));
                 }
-                side[i].transform.parent.rotation = parentSync;
-                side[i].transform.parent.Rotate(new Vector3(rotationAngle, 0, 0));
+                if (auto)
+                {
+                    side[i].transform.parent.rotation = parentSync;
+                }
+                side[i].transform.parent.Rotate(new Vector3(-inAngle, 0, 0));
+
             }
-            side[8].transform.parent.rotation = parentSync;
-            side[8].transform.parent.Rotate(new Vector3(rotationAngle, 0, 0));
+            if (auto)
+            {
+                side[8].transform.parent.rotation = parentSync;
+            }
+            side[8].transform.parent.Rotate(new Vector3(-inAngle, 0, 0));
         }
         if (side == cubeState.right || side == cubeState.left)
         {
@@ -75,17 +86,15 @@ public class CubeMovement : MonoBehaviour
             {
                 if (i % 2 == 0)
                 {
-                    side[i].transform.parent.localPosition = new Vector3(Sin(inAngle, i), Cos(inAngle, i), floor);
+                    side[i].transform.parent.localPosition = new Vector3(Sin(angle, i), Cos(angle, i), floor);
                 }
                 else
                 {
-                    side[i].transform.parent.localPosition = new Vector3(SinSqrt(inAngle, i), CosSqrt(inAngle, i), floor);
+                    side[i].transform.parent.localPosition = new Vector3(SinSqrt(angle, i), CosSqrt(angle, i), floor);
                 }
-                side[i].transform.parent.rotation = parentSync;
-                side[i].transform.parent.Rotate(new Vector3(0, 0, rotationAngle));
+                side[i].transform.parent.Rotate(new Vector3(0, 0, -inAngle));
             }
-            side[8].transform.parent.rotation = parentSync;
-            side[8].transform.parent.Rotate(new Vector3(0, 0, rotationAngle));
+            side[8].transform.parent.Rotate(new Vector3(0, 0, -inAngle));
         }
         if (side == cubeState.up || side == cubeState.down)
         {
@@ -93,17 +102,15 @@ public class CubeMovement : MonoBehaviour
             {
                 if (i % 2 == 0)
                 {
-                    side[i].transform.parent.localPosition = new Vector3(Cos(inAngle, i), floor, Sin(inAngle, i));
+                    side[i].transform.parent.localPosition = new Vector3(Cos(angle, i), floor, Sin(angle, i));
                 }
                 else
                 {
-                    side[i].transform.parent.localPosition = new Vector3(CosSqrt(inAngle, i), floor, SinSqrt(inAngle, i));
+                    side[i].transform.parent.localPosition = new Vector3(CosSqrt(angle, i), floor, SinSqrt(angle, i));
                 }
-                side[i].transform.parent.rotation = parentSync;
-                side[i].transform.parent.Rotate(new Vector3(0, rotationAngle, 0));
+                side[i].transform.parent.Rotate(new Vector3(0, -inAngle, 0));
             }
-            side[8].transform.parent.rotation = parentSync;
-            side[8].transform.parent.Rotate(new Vector3(0, rotationAngle, 0));
+            side[8].transform.parent.Rotate(new Vector3(0, -inAngle, 0));
         }
     }
     public float SinSqrt(float inAngle, int count)
@@ -125,5 +132,8 @@ public class CubeMovement : MonoBehaviour
     public float RotateToRightAngle(float inAngle)
     {
         return Mathf.Round(inAngle / 90) * 90;
+    }
+    public float Angle360(float inAngle){
+        return inAngle -= 360;
     }
 }
