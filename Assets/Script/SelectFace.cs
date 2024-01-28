@@ -27,6 +27,7 @@ public class SelectFace : MonoBehaviour
         // 마우스 좌클릭이 되는 순간
         if (Input.GetMouseButtonDown(0))
         {
+            mouseRef = Input.mousePosition;
             // SpinSide함수에 사용될 처음 들어온 마우스 값
             readCube.ReadState();
             RaycastHit hit;

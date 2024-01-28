@@ -1,26 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.Universal.Internal;
 using UnityEngine.TextCore.Text;
 
 public class CubeMovement : MonoBehaviour
 {
     private List<GameObject> nowCube;
     private CubeState cubeState;
-    private float firstAngle;
-    private float mamoryAngle;
-    private float frontAngle;
-    private float backAngle;
-    private float upAngle;
-    private float downAngle;
-    private float rigntAngle;
-    private float leftAngle;
-    float angle = 0;
     public int floor;
+    Vector3 localForward;
+    Vector3 targetQuaternion;
+    float angle = 0;
     bool auto = false;
 
     void Start()
     {
+        
         cubeState = FindObjectOfType<CubeState>();
     }
 
@@ -30,31 +27,27 @@ public class CubeMovement : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             auto = true;
-            angle = RotateToRightAngle(angle);
-            StartRotate(nowCube, angle);
+            StartRotate(nowCube, 0);
             angle = 0;
             auto = false;
-
         }
     }
 
     // 마우스 좌클릭이 되는 순간과 현재 감지되고 있는 값을 뺀 값을 받는중
     public void StartRotate(List<GameObject> side, float inAngle)
     {
+        float temp = 0;
         nowCube = side;
-        CubeRotation(side, inAngle);
-    }
-
-    public void CubeRotation(List<GameObject> side, float inAngle)
-    {
-        print(inAngle);
-        if(!auto){
-            if( angle >= 360){
-                angle += inAngle;
-            }
+        if (!auto)
+        {
+            angle += inAngle;
         }
-        var parentSync = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z);
-        print(angle);
+        else
+        {
+            temp = -angle + RotateToRightAngle(angle);
+            angle = RotateToRightAngle(angle);
+        }
+
         if (side == cubeState.front || side == cubeState.back)
         {
             for (int i = 0; i < 8; i++)
@@ -67,18 +60,12 @@ public class CubeMovement : MonoBehaviour
                 {
                     side[i].transform.parent.localPosition = new Vector3(floor, SinSqrt(angle, i), CosSqrt(angle, i));
                 }
-                if (auto)
-                {
-                    side[i].transform.parent.rotation = parentSync;
-                }
-                side[i].transform.parent.Rotate(new Vector3(-inAngle, 0, 0));
-
             }
-            if (auto)
+            
+            for (int i = 0; i < 9; i++)
             {
-                side[8].transform.parent.rotation = parentSync;
+                side[i].transform.parent.rotation = Quaternion.AngleAxis(inAngle + temp, Vector3.left) * side[i].transform.parent.rotation;
             }
-            side[8].transform.parent.Rotate(new Vector3(-inAngle, 0, 0));
         }
         if (side == cubeState.right || side == cubeState.left)
         {
@@ -92,9 +79,11 @@ public class CubeMovement : MonoBehaviour
                 {
                     side[i].transform.parent.localPosition = new Vector3(SinSqrt(angle, i), CosSqrt(angle, i), floor);
                 }
-                side[i].transform.parent.Rotate(new Vector3(0, 0, -inAngle));
             }
-            side[8].transform.parent.Rotate(new Vector3(0, 0, -inAngle));
+            for (int i = 0; i < 9; i++)
+            {
+                side[i].transform.parent.rotation = Quaternion.AngleAxis(inAngle + temp, Vector3.back) * side[i].transform.parent.localRotation;
+            }
         }
         if (side == cubeState.up || side == cubeState.down)
         {
@@ -108,9 +97,11 @@ public class CubeMovement : MonoBehaviour
                 {
                     side[i].transform.parent.localPosition = new Vector3(CosSqrt(angle, i), floor, SinSqrt(angle, i));
                 }
-                side[i].transform.parent.Rotate(new Vector3(0, -inAngle, 0));
             }
-            side[8].transform.parent.Rotate(new Vector3(0, -inAngle, 0));
+            for (int i = 0; i < 9; i++)
+            {
+                side[i].transform.parent.rotation = Quaternion.AngleAxis(inAngle + temp, Vector3.down) * side[i].transform.parent.localRotation;
+            }
         }
     }
     public float SinSqrt(float inAngle, int count)
@@ -132,8 +123,5 @@ public class CubeMovement : MonoBehaviour
     public float RotateToRightAngle(float inAngle)
     {
         return Mathf.Round(inAngle / 90) * 90;
-    }
-    public float Angle360(float inAngle){
-        return inAngle -= 360;
     }
 }
