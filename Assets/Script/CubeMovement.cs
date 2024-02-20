@@ -10,14 +10,11 @@ public class CubeMovement : MonoBehaviour
     private List<GameObject> nowCube;
     private CubeState cubeState;
     public int floor;
-    Vector3 localForward;
-    Vector3 targetQuaternion;
     float angle = 0;
     bool auto = false;
 
     void Start()
     {
-        
         cubeState = FindObjectOfType<CubeState>();
     }
 
@@ -64,10 +61,11 @@ public class CubeMovement : MonoBehaviour
             
             for (int i = 0; i < 9; i++)
             {
-                side[i].transform.parent.rotation = Quaternion.AngleAxis(inAngle + temp, Vector3.left) * side[i].transform.parent.rotation;
+                Debug.DrawRay(-side[8].transform.parent.transform.parent.position, -side[i].transform.parent.transform.parent.right*1000, Color.red, 0.1f);
+                side[i].transform.parent.rotation = Quaternion.AngleAxis(inAngle + temp, -side[i].transform.parent.transform.parent.right) * side[i].transform.parent.rotation;
             }
         }
-        if (side == cubeState.right || side == cubeState.left)
+        if (side == cubeState.right|| side == cubeState.left)
         {
             for (int i = 0; i < 8; i++)
             {
@@ -82,9 +80,11 @@ public class CubeMovement : MonoBehaviour
             }
             for (int i = 0; i < 9; i++)
             {
-                side[i].transform.parent.rotation = Quaternion.AngleAxis(inAngle + temp, Vector3.back) * side[i].transform.parent.localRotation;
+                Debug.DrawRay(-side[i].transform.parent.transform.parent.position, side[i].transform.parent.transform.parent.forward*1000, Color.red, 0.1f);
+                side[i].transform.parent.rotation = Quaternion.AngleAxis(inAngle + temp, -side[i].transform.parent.transform.parent.forward) * side[i].transform.parent.rotation;
             }
         }
+        
         if (side == cubeState.up || side == cubeState.down)
         {
             for (int i = 0; i < 8; i++)
@@ -100,7 +100,8 @@ public class CubeMovement : MonoBehaviour
             }
             for (int i = 0; i < 9; i++)
             {
-                side[i].transform.parent.rotation = Quaternion.AngleAxis(inAngle + temp, Vector3.down) * side[i].transform.parent.localRotation;
+                Debug.DrawRay(-side[i].transform.parent.transform.parent.position, -side[i].transform.parent.transform.parent.up*1000, Color.red);
+                side[i].transform.parent.rotation = Quaternion.AngleAxis(inAngle + temp, -side[i].transform.parent.transform.parent.up) * side[i].transform.parent.rotation;
             }
         }
     }
